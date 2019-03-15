@@ -15,15 +15,21 @@
 
 /*!
  * \def BOOLEAN_OPERATIONS_DEBUG
- * \brief Enables computation time measuring
+ * \brief Enables debug info
  */
-#define BOOLEAN_OPERATIONS_DEBUG
+//#define BOOLEAN_OPERATIONS_DEBUG
 
 /*!
  * \def BOOLEAN_OPERATIONS_DEBUG_VERBOSE
  * \brief Enables more debug info to compare with Mepp2
  */
-#define BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+//#define BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+
+/*!
+ * \def BOOLEAN_OPERATIONS_TIME
+ * \brief Enables computation time measuring
+ */
+#define BOOLEAN_OPERATIONS_TIME
 
 /*!
  * \enum Bool_Op
@@ -91,7 +97,6 @@ inline Vector_exact Compute_Normal_direction(Halfedge_handle he)   // MT: suppre
 								point_to_exact(he->next()->next()->vertex()->point())	- point_to_exact(he->vertex()->point()));
 }
 	
-#ifdef BOOLEAN_OPERATIONS_DEBUG
 
 /**
  * \fn inline double tr(double &n)
@@ -104,6 +109,5 @@ inline double tr(double &n)
 {
 	return floor(n*1000)/1000;
 }
-#endif // BOOLEAN_OPERATIONS_DEBUG
 	
 #endif // BOOLEAN_OPERATIONS_DEFINITIONS_H

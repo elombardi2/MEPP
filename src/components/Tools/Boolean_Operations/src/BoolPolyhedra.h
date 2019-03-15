@@ -15,9 +15,9 @@
 #include "CPolyhedron_from_polygon_builder_3.h"
 #include "Boolean_Operations_triangulation.h"
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 #include "Time_measure.h"
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 /*! \typedef HDS
  * \brief Halfedge data structure*/
@@ -146,11 +146,14 @@ public:
 #ifdef BOOLEAN_OPERATIONS_DEBUG
 		std::ofstream ofstrMA("input_A_boolsum.off"); ofstrMA << *pMA;
 		std::ofstream ofstrMB("input_B_boolsum.off"); ofstrMB << *pMB;
+#endif // BOOLEAN_OPERATIONS_DEBUG
+
+#ifdef BOOLEAN_OPERATIONS_TIME
 		Time_measure Timer_total, Timer;	
 
 		Timer_total.Start();
 		Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 		Init(pMA, pMB);
 #if 0 //TODO-elo-rm-dbg
@@ -162,52 +165,102 @@ public:
     }
 #endif
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 		duration_Init = Timer.GetDiff();
 		Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 		FindCouples();
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 		duration_FindCouples = Timer.GetDiff();
 		Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 		if(!m_Couples.empty())
 		{
 			ComputeIntersections();
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 			duration_ComputeIntersections = Timer.GetDiff();
 			Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 			CutIntersectedFacets();
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 			duration_CutIntersectedFacets = Timer.GetDiff();
 			Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 			PropagateFacets();
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 			duration_PropagateFacets = Timer.GetDiff();
 			Timer.Start();
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 
 			pMout->delegate(ppbuilder);
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 			duration_delegate = Timer.GetDiff();
 			duration_total = Timer_total.GetDiff();
+
+      // print short stats about times and mesh sizes
+      std::cout << "Computation time :" << std::endl;
+      std::cout << " + Initialization             : "
+                << tr(duration_Init)
+                << " s"
+                << std::endl;
+      std::cout << " + Finding the Intersections  : "
+                << tr(duration_FindCouples)
+                << " s"
+                << std::endl;
+      std::cout << " + Compute the Intersections  : "
+                << tr(duration_ComputeIntersections)
+                << " s"
+                << std::endl;
+      std::cout << " + Cut the Intersected Facets : "
+                << tr(duration_CutIntersectedFacets)
+                << " s"
+                << std::endl;
+      std::cout << " + Complete the result        : "
+                << tr(duration_PropagateFacets)
+                << " s"
+                << std::endl;
+      std::cout << " + Create the polyhedron      : "
+                << tr(duration_delegate)
+                << " s"
+                << std::endl;
+      std::cout << "---------------------------------------"
+                << std::endl;
+      std::cout << " Total                        : "
+                << tr(duration_total)
+                << " s"
+                << std::endl;
+
+      std::cout << std::endl;
+      std::cout << "Details :" << std::endl;
+      std::cout << std::endl;
+      std::cout << "Polyedron A :" << std::endl;
+      std::cout << "Number of Facets :                   "
+                << m_pA->size_of_facets() << std::endl;
+      std::cout << std::endl;
+      std::cout << "Polyedron B :" << std::endl;
+      std::cout << "Number of Facets :                   "
+                << m_pB->size_of_facets() << std::endl;
+      std::cout << std::endl;
+      std::cout << "Result :" << std::endl;
+      std::cout << "Number of Facets :                   "
+                << pMout->size_of_facets() << std::endl;
+#endif // BOOLEAN_OPERATIONS_TIME
+
+#ifdef BOOLEAN_OPERATIONS_DEBUG
 			std::ofstream ofstrMS("output_boolsum.off"); ofstrMS << *pMout;
 			ofstrtime.open("output_time.txt");
 			WriteData(pMout);
 			ColorType();
 #endif // BOOLEAN_OPERATIONS_DEBUG
-
 		}
 	}
 	
@@ -1669,7 +1722,7 @@ private:
 	/*! \brief the AABB-tree*/
 	AABB_Tree tree;
 
-#ifdef BOOLEAN_OPERATIONS_DEBUG
+#ifdef BOOLEAN_OPERATIONS_TIME
 	
 	/*! \brief The output report file*/
 	std::ofstream ofstrtime;
@@ -1688,7 +1741,7 @@ private:
 	/*! \brief Time to Compute a Boolean operation*/
 	double duration_total;
 	
-#endif // BOOLEAN_OPERATIONS_DEBUG
+#endif // BOOLEAN_OPERATIONS_TIME
 };
 
 #endif // BOOLPOLYHEDRA_H
