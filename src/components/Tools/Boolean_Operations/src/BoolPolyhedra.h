@@ -153,6 +153,14 @@ public:
 #endif // BOOLEAN_OPERATIONS_DEBUG
 
 		Init(pMA, pMB);
+#if 0 //TODO-elo-rm-dbg
+    {
+      std::ofstream ofstrMA_tmp("after_Init_A_boolsum.off");
+      ofstrMA_tmp << *pMA;
+      std::ofstream ofstrMB_tmp("after_Init_B_boolsum.off");
+      ofstrMB_tmp << *pMB;
+    }
+#endif
 
 #ifdef BOOLEAN_OPERATIONS_DEBUG
 		duration_Init = Timer.GetDiff();
@@ -242,7 +250,18 @@ private:
 			pFacet->IsExt = false;
 			pFacet->IsOK = false;
 		}
-	}
+
+#ifdef BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+    {
+      // init halfedges labels in order to compare with Mepp2
+      Halfedge_iterator pHe;
+      for(pHe = m_pA->halfedges_begin(); pHe != m_pA->halfedges_end(); pHe++)
+          pHe->Label = 42424242;
+      for(pHe = m_pB->halfedges_begin(); pHe != m_pB->halfedges_end(); pHe++)
+          pHe->Label = 42424242;
+    }
+#endif
+  }
 	
 	/*! \brief Finds every couple of facets between the two input polyhedra that intersects
 	 * \brief Each couple is stored in the member m_Couples*/
@@ -337,9 +356,27 @@ private:
 				}
 			}
 		}
-	}
-	
-	/*! \brief Compute the intersections*/
+
+#ifdef BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+    {
+      std::cout << "end of FindCouples(), mesh A, face Label property:" << std::endl;
+      for(pFacet = m_pA->facets_begin(); pFacet != m_pA->facets_end(); pFacet++)
+          std::cout << pFacet->Label << std::endl;
+      std::cout << "end of FindCouples(), mesh B, face Label property:" << std::endl;
+      for(pFacet = m_pB->facets_begin(); pFacet != m_pB->facets_end(); pFacet++)
+          std::cout << pFacet->Label << std::endl;
+      std::cout << "end of FindCouples(), mesh A, halfedge Label property:" << std::endl;
+      Halfedge_iterator pHe;
+      for(pHe = m_pA->halfedges_begin(); pHe != m_pA->halfedges_end(); pHe++)
+          std::cout << pHe->Label << std::endl;
+      std::cout << "end of FindCouples(), mesh B, halfedge Label property:" << std::endl;
+      for(pHe = m_pB->halfedges_begin(); pHe != m_pB->halfedges_end(); pHe++)
+          std::cout << pHe->Label << std::endl;
+    }
+#endif //BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+  }
+
+  /*! \brief Compute the intersections*/
 	void ComputeIntersections()
 	{
 		while(!m_Couples.empty())

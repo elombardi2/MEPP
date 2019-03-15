@@ -17,8 +17,13 @@
  * \def BOOLEAN_OPERATIONS_DEBUG
  * \brief Enables computation time measuring
  */
-
 #define BOOLEAN_OPERATIONS_DEBUG
+
+/*!
+ * \def BOOLEAN_OPERATIONS_DEBUG_VERBOSE
+ * \brief Enables more debug info to compare with Mepp2
+ */
+#define BOOLEAN_OPERATIONS_DEBUG_VERBOSE
 
 /*!
  * \enum Bool_Op

@@ -120,7 +120,10 @@ void mepp_component_Boolean_Operations_plugin::Union()
 
 			viewerU->showAllScene();
 
-			viewerU->getScenePtr()->setcurrentFile(tr("Union %1 from vid %2").arg(component_ptr->cpt_U).arg((qlonglong)viewer, 0, 16));
+#if 0 // TODO-elo-rm-dbg
+      std::cout << "ELO-DBG: " << tr("Union %1 from vid %2").arg(component_ptr->cpt_U).arg((qlonglong)viewer, 0, 16).toStdString() << std::endl;
+#endif
+      viewerU->getScenePtr()->setcurrentFile(tr("Union %1 from vid %2").arg(component_ptr->cpt_U).arg((qlonglong)viewer, 0, 16));
 			viewerU->setDynTitle();
 		}
 	}
